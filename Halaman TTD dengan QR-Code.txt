@@ -1,0 +1,28 @@
+ <div class="signature">
+            <?php
+            require_once('assets/phpqrcode/qrlib.php');
+            $no = $tbl_spk['id_spk'];
+            ?>
+            <div class="pemberi">
+                <p style="margin-bottom: 5px;"><strong>Cilegon, <?= date('d F Y', strtotime($tbl_spk['tgl_spk'])); ?></strong></p>
+                <p>Pemberi Kerja</p>
+                <p><strong>PT. KRAKATAU ARGO LOGISTICS</strong></p>
+                <?php if ($tbl_spk['status_approval'] == 'approved'): ?>
+                    <?php
+                    $url = base_url("perusahaan/print_spk/{$tbl_spk['id_spk']}");
+                    $fileName = "kode{$no}.png";
+                    QRcode::png($url, "assets/img/qrcode/{$fileName}", "M", 2, 2);
+                    ?>
+                    <img src="<?php echo base_url("assets/img/qrcode/{$fileName}"); ?>" alt="QR Code" class="qr-code">
+                <?php endif; ?>
+                <p><strong><?= $tbl_spk['approved_by']; ?></strong></p>
+                <p>Dept Head Finance and Procurement</p>
+            </div>
+            <div class="penerima" style="margin-left: 390px; margin-top: -140px;">
+                <p>Penerima Kerja</p>
+                <p><strong><?= $tbl_spk['nama_perusahaan']; ?></strong></p>
+                <br><br><br><br>
+                <p style="margin-top: 30px;"><strong><?= $tbl_spk['nama_pic']; ?></strong></p>
+                <p><?= $tbl_spk['jabatan_pic']; ?></p>
+            </div>
+        </div>

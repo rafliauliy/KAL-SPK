@@ -1,0 +1,249 @@
+<?= $this->session->flashdata('pesan'); ?>
+<form id="approveForm" method="post" action="<?= site_url('approval/approve_multiple'); ?>">
+    <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+    <div class="card shadow-sm mb-4 border-bottom-primary">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h4 class="h5 m-0 font-weight-bold text-primary">
+                        Data SPK
+                    </h4>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" id="approveAllBtn" class="btn btn-success btn-sm">
+                        <i class="fas fa-check"></i> Approve Selected
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive w-100">
+                <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>No</th>
+                            <th>Nomor Surat</th>
+                            <th>Nama Perusahaan</th>
+                            <th>Tanggal SPK</th>
+                            <th>Status</th>
+                            <th>Qr Code</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $no = 1; // Penomoran urut untuk tabel
+                        foreach ($spk_list as $spk): ?>
+                            <tr>
+                                <td><input type="checkbox" class="spkCheckbox" name="ids_spk[]" value="<?= $spk['id_spk']; ?>"></td>
+                                <td><?= $no++; ?></td> <!-- Nomor urut untuk tabel -->
+                                <td><?= $spk['nomor_surat']; ?></td>
+                                <td><?= $spk['nama_perusahaan']; ?></td>
+                                <td><?= $spk['tgl_spk']; ?></td>
+                                <td>
+                                    <?php if ($spk['status_approval'] == 'pending'): ?>
+                                        <span class="badge bg-warning">Pending</span>
+                                    <?php elseif ($spk['status_approval'] == 'approved'): ?>
+                                        <span class="badge bg-success">Approved</span>
+                                    <?php elseif ($spk['status_approval'] == 'rejected'): ?>
+                                        <span class="badge bg-danger">Rejected</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    // Include the PHP QR Code library
+                                    require_once('assets/phpqrcode/qrlib.php');
+
+                                    // Define the file path and name
+                                    $filePath = FCPATH . 'assets/img/qrcode/';
+                                    $uniqueId = $spk['id_spk']; // Use a unique identifier for QR code generation
+                                    $fileName = "kode" . $uniqueId . ".png";
+                                    $fullFilePath = $filePath . $fileName;
+
+                                    // Generate the QR code and save it to the specified file
+                                    if ($spk['status_approval'] == 'approved') {
+                                        $kode = $spk['nama_perusahaan'] . $spk['id_spk'] . "/" . $spk['nomor_surat'] . "/" . $spk['approved_by'];
+                                        QRcode::png($kode, $fullFilePath, "M", 2, 2);
+
+                                        // Update the QR code path in the database
+                                        $this->db->set('qr_code', 'assets/img/qrcode/' . $fileName);
+                                        $this->db->where('id_spk', $spk['id_spk']);
+                                        $this->db->update('tbl_spk');
+                                    }
+                                    ?>
+                                    <?php if ($spk['status_approval'] == 'approved'): ?>
+                                        <!-- Display the generated QR code image -->
+                                        <img src="<?php echo base_url('assets/img/qrcode/' . $fileName); ?>" alt="QR Code">
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#detailModal<?= $spk['id_spk']; ?>">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <a href="<?= site_url('approval/approve/' . $spk['id_spk']); ?>" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a href="<?= site_url('approval/reject/' . $spk['id_spk']); ?>" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                    </tbody>
+
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="detailModal<?= $spk['id_spk']; ?>" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel<?= $spk['id_spk']; ?>" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width: 50%;" role="document"> <!-- Atur lebar di sini -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detailModalLabel<?= $spk['id_spk']; ?>">Detail SPK</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="nomorSurat<?= $spk['id_spk']; ?>">Nomor Surat:</label>
+                                                <input type="text" class="form-control" id="nomorSurat<?= $spk['id_spk']; ?>" value="<?= $spk['nomor_surat']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="namaPerusahaan<?= $spk['id_spk']; ?>">Nama Perusahaan:</label>
+                                                <input type="text" class="form-control" id="namaPerusahaan<?= $spk['id_spk']; ?>" value="<?= $spk['nama_perusahaan']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="tglSpk<?= $spk['id_spk']; ?>">Tanggal SPK:</label>
+                                                <input type="text" class="form-control" id="tglSpk<?= $spk['id_spk']; ?>" value="<?= $spk['tgl_spk']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="salesType<?= $spk['id_spk']; ?>">Sales Type:</label>
+                                                <input type="text" class="form-control" id="salesType<?= $spk['id_spk']; ?>" value="<?= $spk['sales_type']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="produk<?= $spk['id_spk']; ?>">Produk:</label>
+                                                <input type="text" class="form-control" id="produk<?= $spk['id_spk']; ?>" value="<?= $spk['produk']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="customer<?= $spk['id_spk']; ?>">Customer:</label>
+                                                <input type="text" class="form-control" id="customer<?= $spk['id_spk']; ?>" value="<?= $spk['customer']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="asalMuat<?= $spk['id_spk']; ?>">Asal Muat:</label>
+                                                <input type="text" class="form-control" id="asalMuat<?= $spk['id_spk']; ?>" value="<?= $spk['asal_muat']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="tujuanBongkar<?= $spk['id_spk']; ?>">Tujuan Bongkar:</label>
+                                                <input type="text" class="form-control" id="tujuanBongkar<?= $spk['id_spk']; ?>" value="<?= $spk['tujuan_bongkar']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="tarifJasa<?= $spk['id_spk']; ?>">Tarif Jasa:</label>
+                                                <input type="text" class="form-control" id="tarifJasa<?= $spk['id_spk']; ?>" value="<?= $spk['tarif_jasa']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="nomorCs<?= $spk['id_spk']; ?>">Nomor CS:</label>
+                                                <input type="text" class="form-control" id="nomorCs<?= $spk['id_spk']; ?>" value="<?= $spk['nomor_cs']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="approval<?= $spk['id_spk']; ?>">Approval:</label>
+                                                <input type="text" class="form-control" id="approval<?= $spk['id_spk']; ?>" value="<?= $spk['approval']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="rencanaKerja<?= $spk['id_spk']; ?>">Rencana Kerja:</label>
+                                                <input type="text" class="form-control" id="rencanaKerja<?= $spk['id_spk']; ?>" value="<?= $spk['rencana_kerja']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="jenisPekerjaan<?= $spk['id_spk']; ?>">Jenis Pekerjaan:</label>
+                                                <input type="text" class="form-control" id="jenisPekerjaan<?= $spk['id_spk']; ?>" value="<?= $spk['jenis_pekerjaan']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="volume<?= $spk['id_spk']; ?>">Volume:</label>
+                                                <input type="text" class="form-control" id="volume<?= $spk['id_spk']; ?>" value="<?= $spk['volume']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="jenisAngkutan<?= $spk['id_spk']; ?>">Jenis Angkutan:</label>
+                                                <input type="text" class="form-control" id="jenisAngkutan<?= $spk['id_spk']; ?>" value="<?= $spk['jenis_angkutan']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="termin<?= $spk['id_spk']; ?>">Termin:</label>
+                                                <input type="text" class="form-control" id="termin<?= $spk['id_spk']; ?>" value="<?= $spk['termin']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="mincharge<?= $spk['id_spk']; ?>">Mincharge:</label>
+                                                <input type="text" class="form-control" id="mincharge<?= $spk['id_spk']; ?>" value="<?= $spk['mincharge']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="namaPic<?= $spk['id_spk']; ?>">Nama PIC:</label>
+                                                <input type="text" class="form-control" id="namaPic<?= $spk['id_spk']; ?>" value="<?= $spk['nama_pic']; ?>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="jabatanPic<?= $spk['id_spk']; ?>">Jabatan PIC:</label>
+                                                <input type="text" class="form-control" id="jabatanPic<?= $spk['id_spk']; ?>" value="<?= $spk['jabatan_pic']; ?>" readonly>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="statusApproval<?= $spk['id_spk']; ?>">Status Approval:</label>
+                                                <input type="text" class="form-control" id="statusApproval<?= $spk['id_spk']; ?>" value="<?= ucfirst($spk['status_approval']); ?>" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle "Select All" checkbox
+        document.getElementById('selectAll').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.spkCheckbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('approveAllBtn').addEventListener('click', function(event) {
+            event.preventDefault();
+            let form = document.getElementById('approveForm');
+            let selectedCheckboxes = document.querySelectorAll('.spkCheckbox:checked');
+
+            if (selectedCheckboxes.length === 0) {
+                alert('Please select at least one SPK to approve.');
+                return;
+            }
+
+            form.submit();
+        });
+    });
+</script>

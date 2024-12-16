@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Perintah Kerja</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+            /* Menghilangkan margin halaman */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            line-height: 1.1;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            margin-top: -30px;
+            /* Menambahkan posisi relatif untuk kontrol posisioning absolut */
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            /* Center the container horizontally */
+            padding: 0 5px;
+            /* Add some padding on the sides */
+            box-sizing: border-box;
+            margin-top: 60px;
+            /* Space from the top, adjust as needed */
+            margin-bottom: 40px;
+            /* Space at the bottom */
+            max-width: 800px;
+            /* Set a maximum width for the container */
+        }
+
+        .data {
+            margin-left: 90px;
+            line-height: 1.0;
+        }
+
+        .pembayaran {
+            margin-left: -5px;
+            margin-top: -15px;
+            text-align: justify;
+        }
+
+        .pembayaran p {
+            text-indent: -15px;
+            /* Mengurangi indentasi pada baris pertama */
+            padding-left: 30px;
+            /* Menambahkan padding pada semua baris */
+        }
+
+
+
+        .syarat {
+            margin-left: -5px;
+            margin-top: -15px;
+            text-align: justify;
+            line-height: 1.1;
+
+        }
+
+        .syarat p {
+            text-indent: -17px;
+            /* Mengurangi indentasi pada baris pertama */
+            padding-left: 30px;
+            /* Menambahkan padding pada semua baris */
+            line-height: 1.1;
+        }
+
+
+        .header {
+            position: absolute;
+            /* Menggunakan posisi absolut */
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 15px;
+            margin-top: 50px;
+
+        }
+
+        .header img {
+            max-width: 200px;
+            margin: 10px;
+            margin-right: 550px;
+            margin-top: -50px;
+
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            margin-top: -10px;
+        }
+
+        .header p {
+            margin-top: 5px;
+        }
+
+        .content {
+            margin-top: 60px;
+            /* Mengatur jarak dari header */
+            padding: 0 15px;
+            /* Menambahkan padding kiri dan kanan */
+        }
+
+        .content p {
+            margin: 6px 0;
+        }
+
+        .content .data {
+            margin-top: 10px;
+        }
+
+        .content .data table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .content .data td {
+            padding: 3px;
+            vertical-align: top;
+        }
+
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            /* Aligns items to the top */
+            margin: 0px;
+        }
+
+        .pemberi,
+        .penerima {
+            width: 45%;
+            text-align: center;
+        }
+
+        .qr-code {
+            margin: 5px auto;
+            display: block;
+        }
+
+        .pemberi p,
+        .penerima p {
+            margin: 0px 0;
+        }
+
+
+        .footer {
+            position: absolute;
+            margin-top: 60px;
+            margin-left: -25px;
+        }
+
+        .footer p {
+            margin: 2px 0;
+            /* Mengurangi margin atas dan bawah untuk teks */
+            line-height: 1.2;
+            /* Menyesuaikan jarak antar baris */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="<?= base_url('assets/img/multimodal.png') ?>" alt="Logo KAL" />
+            <img src="<?= base_url('assets/img/jadi.png') ?>" alt="Logo iso" style="margin-right: -500px;  max-width: 220px; margin-top: -55px;" />
+            <h1 style="font-size: 18px;">SURAT PERINTAH KERJA</h1>
+            <p>No.<?= $tbl_spk['nomor_surat']; ?></p>
+        </div>
+
+        <div class="content">
+            <p>Kepada Yth,</p>
+            <p><?= $tbl_spk['nama_perusahaan']; ?></p>
+            <p>Di <span style="text-decoration: underline;">Tempat</span></p>
+
+            <!-- Garis Header -->
+            <hr style="border: 0; border-top: 2px solid #000; width: 100%; margin: 10px 0 10px -2px;">
+
+
+            <p>Dengan Hormat,</p>
+            <p>Sehubungan dengan adanya rencana pekerjaan di PT. Krakatau Argo Logistics (Pemberi Kerja), maka dengan ini kami menugaskan Perusahaan bapak/ibu untuk melaksanakan pekerjaan, </p>
+            <p style="margin-top: 15px;">
+                <strong>Dengan data-data sebagai berikut :</strong>
+            </p>
+
+            <div class="data" style="margin-top: 5px;">
+                <table style="width: 90%; border-collapse: collapse; border: 1px solid black;">
+                    <tr>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Muat</span>
+                                <span style="text-align: center; margin-left: 50px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['asal_muat']; ?></span>
+                            </div>
+                        </td>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Rencana Kerja</span>
+                                <span style="text-align: center; margin-left: 25px;">:</span>
+                                <span style="padding-left: 3px;"><?= date('d F Y', strtotime($tbl_spk['rencana_kerja'])); ?></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Bongkar</span>
+                                <span style="text-align: center; margin-left: 32px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['tujuan_bongkar']; ?></span>
+                            </div>
+                        </td>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Pemilik Barang</span>
+                                <span style="text-align: center; margin-left: 24px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['customer']; ?></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Volume</span>
+                                <span style="text-align: center; margin-left:   36px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['volume']; ?></span>
+                            </div>
+                        </td>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Tarif Jasa</span>
+                                <span style="text-align: center; margin-left: 52px;">:</span>
+                                <span style="padding-left: 3px;">Rp. <?= number_format($tbl_spk['tarif_jasa'], 0, ',', '.'); ?> / Ton</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Nama Barang</span>
+                                <span style="text-align: center; margin-left: 3px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['produk']; ?></span>
+                            </div>
+                        </td>
+                        <td style="border: 1px solid black; padding: 2px; width: 15%;">
+                            <div style="line-height: 1.1;">
+                                <span>Nama Perusahaan</span>
+                                <span style="text-align: center; margin-left: 5px;">:</span>
+                                <span style="padding-left: 3px;"><?= $tbl_spk['nama_perusahaan']; ?></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <h3 style="font-size: 11px; margin-top: 10px;">PEMBAYARAN</h3>
+            <div class="pembayaran">
+                <p>1. Realisasi pembayaran 30 (tiga puluh) hari setelah invoice diterima dengan lengkap, valid, dan disetujui oleh Bagian Keuangan PT. KAL</p>
+                <p>2. Realisasi pembayaran memperhatikan Laporan Hasil Pekerjaan (LHP) yang diterbitkan oleh Pemberi Kerja (TL Stevedoring dan Trans PT. Krakatau Argo Logistics). Tagihan dapat disampaikan maksimal 6 bulan setelah pekerjaan selesai dilaksanakan.</p>
+            </div>
+            <h3 style="font-size: 11px; margin-top: 5px;">SYARAT-SYARAT</h3>
+            <div class="syarat">
+                <p>1. Lingkup pekerjaan di atas harus dilaksanakan sesuai dengan rencana dan spesifikasi teknis yang diberikan serta harus sesuai dengan petunjuk lain maupun tulisan dari Pihak Pemberi Kerja (TL Stevedoring dan Trans).</p>
+                <p>2. Jumlah/Type Unit disesuaikan dengan kebutuhan di lapangan.</p>
+                <p>3. Peralatan Unit yang digunakan berikut operator harus dilengkapi dengan Surat Ijin Layak Operasi dari otoritas yang berwenang (Dinas Tenaga Kerja dan Dinas Perhubungan) serta SIM/SIO.</p>
+                <p>4. Unit yang beroperasi harus dilengkapi dengan Rantai Lasihg, Double Terpal, tambang dengan kondisi yang layak pakai, serta upaya dalam pencegahan kebocoran dan menyiapkan karat pada produk.</p>
+                <p>5. Pihak Tenaga Kerja (Operator/Driver) yang bekerja harus menggunakan APD (Safety Helmet, Masker, Rompi, dan Safety Shoes), memiliki sertifikat vaksin kedua serta mematuhi protokol Covid-19 selama kegiatan operasional berlangsung.</p>
+                <p>6. Risiko atas Cargo kerugian yang mungkin terjadi akan dibebankan kepada Pihak Penerima Kerja. Untuk total kehilangan, untuk penyusutan cargo, kelebihan sisa barang, dan lain-lain maksimal 5% dari invoice yang diterima.</p>
+                <p>7. Jika terjadi kerusakan atau tidak adanya perbaikan peralatan sesuai dengan perjanjian awal, maka alat tersebut dengan tenaga yang sama dan Mekanik Standby 24 jam.</p>
+                <p>8. Pihak penerima kerja menaati dan mematuhi peraturan yang berlaku di area kerja pemberi kerja dan area Krakatau Posco serta area bongkar.</p>
+                <p>9. Pihak Penerima Kerja tidak diperkenankan mengalihkan pekerjaan kepada Pihak Lain (harus dieksekusi sendiri) dalam kondisi apapun tanpa ada izin dari Pihak Pemberi Kerja.</p>
+                <p>10. Pihak Pemberi Kerja berhak meminta penggantian atas kerugian yang terjadi kepada Pihak Penerima Kerja.</p>
+                <p>11. Harga yang telah disepakati tersebut di atas adalah merupakan harga pasti dan tanpa ada kenaikan harga.</p>
+            </div>
+        </div>
+        <p style="margin-top: -3px; margin-left: 15px;">Demikian Penunjukan ini disampaikan untuk dapat dilaksanakan sesuai dengan ketentuan yang berlaku, Atas
+            perhatian dan kerja sama yang baik kami mengucapkan terimakasih.</p>
+
+        <div class="signature">
+            <?php
+            require_once('assets/phpqrcode/qrlib.php');
+            $no = $tbl_spk['id_spk'];
+            ?>
+            <div class="pemberi">
+                <p style="margin-bottom: 5px;"><strong>Cilegon, <?= date('d F Y', strtotime($tbl_spk['tgl_spk'])); ?></strong></p>
+                <p>Pemberi Kerja</p>
+                <p><strong>PT. KRAKATAU ARGO LOGISTICS</strong></p>
+                <?php if ($tbl_spk['status_approval'] == 'approved'): ?>
+                    <?php
+                    $url = base_url("perusahaan/print_spk/{$tbl_spk['id_spk']}");
+                    $fileName = "kode{$no}.png";
+                    QRcode::png($url, "assets/img/qrcode/{$fileName}", "M", 2, 2);
+                    ?>
+                    <img src="<?php echo base_url("assets/img/qrcode/{$fileName}"); ?>" alt="QR Code" class="qr-code">
+                <?php endif; ?>
+                <p><strong><?= $tbl_spk['approved_by']; ?></strong></p>
+                <p>Dept Head Finance and Procurement</p>
+            </div>
+            <div class="penerima" style="margin-left: 390px; margin-top: -140px;">
+                <p>Penerima Kerja</p>
+                <p><strong><?= $tbl_spk['nama_perusahaan']; ?></strong></p>
+                <br><br><br><br>
+                <p style="margin-top: 30px;"><strong><?= $tbl_spk['nama_pic']; ?></strong></p>
+                <p><?= $tbl_spk['jabatan_pic']; ?></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong style="color: #1E90FF;">PT. KRAKATAU ARGO LOGISTICS</strong></p>
+            <p>Main Office: Jl. S Parman Km 13, Cigading, Kawasan PT. KBS, Cilegon - Banten (42445)</p>
+            <p>Representative Office: Jl. Afrika No. 02, Kawasan PT. Krakatau Posco, Kel. Samangraya Kec. Citangkil, Cilegon - Banten (42443)</p>
+        </div>
+    </div>
+</body>
+
+</html>
