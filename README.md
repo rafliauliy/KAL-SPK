@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # KAL-SPK
 Aplikasi Pengelolaan Surat Perintah Kerja (SPK) untuk Krakatau Argologistics.
 
@@ -8,8 +8,6 @@ Aplikasi Pengelolaan Surat Perintah Kerja (SPK) untuk Krakatau Argologistics.
 - Pengelolaan dokumen
 - Laporan kegiatan
 =======
-# Aplikasi Pengadaan Barang
-## Free Source Code
 
 ### Aplikasi ini dibuat menggunakan
 - Codeigniter 3
@@ -25,7 +23,7 @@ Aplikasi ini digunakan untuk mengelola Surat Perintah Kerja (SPK) di Krakatau Ar
 - Mengelola dokumen terkait SPK
 - Menyusun laporan kegiatan pengadaan barang
 
-**Database** : `ci_barang`
+**Database** : ``
 
 Aplikasi ini mendukung pengguna dengan berbagai peran seperti admin, pengelola perusahaan, dan pihak terkait lainnya untuk memastikan kelancaran proses pengadaan barang.
 >>>>>>> 882cf57 (Initial commit)
